@@ -1,0 +1,3 @@
+websockets
+rpi_ws281x
+Flask==1.1.2

@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <title>LED Strip Stream Integration</title>
+    <script>
+        function setColor() {
+          const color = document.getElementById("led_color").value;
+          console.log(window.location.origin + "/setledcolor?color=" + color.substring(1));
+          fetch(window.location.origin + "/setledcolor?color=" + color.substring(1), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            method: "POST"
+          }).then(resp => {
+            return resp.json();
+          }).then(json => {
+            console.log(JSON.stringify(json));
+          });
+        }
+
+    </script>
+</head>
+
+<body>
+<div>
+    <h1>Hi!</h1>
+    <div>
+        <input type="color" id="led_color" name="led_color" value="{{color}}">
+        <label for="led_color">LED Color</label>
+    </div>
+    <div>
+        <button onclick="setColor()">Set</button>
+    </div>
+</div>
+</body>
+</html>
