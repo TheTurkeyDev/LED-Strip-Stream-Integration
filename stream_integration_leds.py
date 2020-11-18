@@ -32,6 +32,13 @@ def color_from_tuple(color):
     return Color(color[0] - sub, color[1] - sub, color[2] - sub)
 
 
+def idle(strip, tick):
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, Color(0, 0, 0))
+    strip.setPixelColor(tick % strip.numPixels(), Color(255, 255, 255))
+    strip.show()
+
+
 def block_color(strip, tick, colors):
     num_colors = len(colors)
     if num_colors == 0:
@@ -78,8 +85,12 @@ def setup_led_strip():
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     strip.begin()
     tick = 0
+    wait_ms = 20
     while True:
-        if data.display == DisplayType.SOLID or data.display == DisplayType.BLOCK_COLOR:
+        if data.display == DisplayType.IDLE:
+            wait_ms = 20
+            idle(strip, tick)
+        elif data.display == DisplayType.SOLID or data.display == DisplayType.BLOCK_COLOR:
             wait_ms = 20
             block_color(strip, tick, data.colors)
         elif data.display == DisplayType.RAINBOW:
