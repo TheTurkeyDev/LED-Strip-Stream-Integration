@@ -1,17 +1,24 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, current_app
 import data as data
+import display_type
 
 api = Blueprint('api', __name__)
 
 
 @api.route("/")
 def hello():
-    return render_template('index.html', settings={'color': '#%02x%02x%02x' % (data.red, data.green, data.blue)})
+    display_type_map = [{'name': e.name, 'value': e.value} for e in display_type.DisplayType]
+    return render_template('index.html', settings={'colors': data.colors, 'brightness': data.brightness,
+                                                   'display_types': display_type_map})
 
 
-@api.route("/setledcolor", methods=['POST'])
+@api.route("/setledbrightness", methods=['POST'])
 def set_led_color():
-    color = request.args.get('color')
-    rgb = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
-    data.colors = [rgb]
-    return jsonify(success=True, message="Color set!")
+    data.brightness = request.args.get('brightness')
+    return jsonify(success=True, message="Brightness set!")
+
+
+@api.route("/setdisplay", methods=['POST'])
+def set_display_type():
+    data.display = display_type.DisplayType(int(request.args.get('display')))
+    return jsonify(success=True, message="Display set!")

@@ -81,6 +81,17 @@ def rainbow(strip, tick):
     strip.show()
 
 
+def police(strip, tick):
+    for i in range(strip.numPixels()):
+        if tick % 2 == 0 and 0 < i <= 62:
+            strip.setPixelColor(i, Color(255, 0, 0))
+        elif tick % 2 == 1 and 178 < i <= 240:
+            strip.setPixelColor(i, Color(0, 0, 255))
+        else:
+            strip.setPixelColor(i, Color(0, 0, 0))
+    strip.show()
+
+
 def setup_led_strip():
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     strip.begin()
@@ -99,6 +110,9 @@ def setup_led_strip():
         elif data.display == DisplayType.ALTERNATE_COLOR:
             wait_ms = 100
             alternate_color(strip, tick, data.colors)
+        elif data.display == DisplayType.POLICE:
+            wait_ms = 500
+            police(strip, tick)
 
         tick += 1
         time.sleep(wait_ms / 1000.0)
@@ -111,7 +125,7 @@ async def setup_twitch_connection():
 
 
 def setup_flask():
-    app.run(host='0.0.0.0', debug=False, use_reloader=False)
+    app.run(host='0.0.0.0', debug=True, use_reloader=False)
 
 
 if __name__ == '__main__':

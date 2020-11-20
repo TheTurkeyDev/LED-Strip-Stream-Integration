@@ -3,10 +3,9 @@
 <head>
     <title>LED Strip Stream Integration</title>
     <script>
-        function setColor() {
-          const color = document.getElementById("led_color").value;
-          console.log(window.location.origin + "/setledcolor?color=" + color.substring(1));
-          fetch(window.location.origin + "/setledcolor?color=" + color.substring(1), {
+        function setBrightness() {
+          const brightness = document.getElementById("led_brightness").value;
+          fetch(window.location.origin + "/setledbrightness?brightness=" + brightness, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -18,6 +17,19 @@
           });
         }
 
+        function setDisplay() {
+          const displayID = document.getElementById("display_type").value;
+          fetch(window.location.origin + "/setdisplay?display=" + displayID, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            method: "POST"
+          }).then(resp => {
+            return resp.json();
+          }).then(json => {
+            console.log(JSON.stringify(json));
+          });
+        }
     </script>
 </head>
 
@@ -25,11 +37,22 @@
 <div>
     <h1>Hi!</h1>
     <div>
-        <input type="color" id="led_color" name="led_color" value="{{color}}">
-        <label for="led_color">LED Color</label>
+        <label for="led_brightness">Brightness:</label>
+        <input type="range" id="led_brightness" name="led_brightness" value="{{brightness}}" min="0" max="255">
     </div>
     <div>
-        <button onclick="setColor()">Set</button>
+        <button onclick="setBrightness()">Set Brightness</button>
+    </div>
+    <div>
+        <label for="display_type">Display: </label>
+        <select name="display_type" id="display_type">
+            {% for display in settings.display_types %}
+                <option value="{{display.value}}">{{display.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <button onclick="setDisplay()">Set Display</button>
     </div>
 </div>
 </body>

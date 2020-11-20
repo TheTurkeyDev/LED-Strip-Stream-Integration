@@ -7,3 +7,4 @@ class DisplayType(Enum):
     RAINBOW = 2
     BLOCK_COLOR = 3
     ALTERNATE_COLOR = 4
+    POLICE = 5
