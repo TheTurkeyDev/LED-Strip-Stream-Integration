@@ -22,8 +22,6 @@ color_map = {
 # Code referenced from https://github.com/SlackingVeteran/twitch-pubsub/blob/master/webSocketClient.py
 class WebSocketClient:
     def __init__(self):
-        # list of topics to subscribe to
-        self.topics = ["channel-points-channel-v1.32907202"]
         self.auth_token = secret.auth_token
         pass
 
@@ -38,7 +36,7 @@ class WebSocketClient:
             print('Connection established. Client correctly connected')
             json_message = json.dumps({
                 "type": "LISTEN",
-                "nonce": "snLwNF1kKeYxKOqHiq19%WEC*2UYuGxMrm6*30b9rFzKC0Yw5$S^2yXT!pyCLob8",
+                "nonce": "4jgUaUv0zdxBMe2tN6YSZaCROCwkO92baSaFzgT50sWFySI15ErkVpoIqfqLwoZ6",
                 "channel_id": '32907202',
                 "topics": ["channel_points_reward_redeem"],
                 "token": self.auth_token
