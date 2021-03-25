@@ -101,15 +101,18 @@ def setup_led_strip():
         if data.display == DisplayType.IDLE:
             wait_ms = 20
             idle(strip, tick)
-        elif data.display == DisplayType.SOLID or data.display == DisplayType.BLOCK_COLOR:
+        elif data.display == DisplayType.SOLID:
             wait_ms = 20
-            block_color(strip, tick, data.colors)
+            block_color(strip, tick, data.colors[0:1].copy())
+        elif data.display == DisplayType.BLOCK_COLOR:
+            wait_ms = 20
+            block_color(strip, tick, data.colors.copy())
         elif data.display == DisplayType.RAINBOW:
             wait_ms = 20
             rainbow(strip, tick)
         elif data.display == DisplayType.ALTERNATE_COLOR:
             wait_ms = 100
-            alternate_color(strip, tick, data.colors)
+            alternate_color(strip, tick, data.colors.copy())
         elif data.display == DisplayType.POLICE:
             wait_ms = 500
             police(strip, tick)

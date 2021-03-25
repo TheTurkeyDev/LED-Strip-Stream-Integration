@@ -2,57 +2,113 @@
 
 <head>
     <title>LED Strip Stream Integration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script>
         function setBrightness() {
-          const brightness = document.getElementById("led_brightness").value;
-          fetch(window.location.origin + "/setledbrightness?brightness=" + brightness, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            method: "POST"
-          }).then(resp => {
-            return resp.json();
-          }).then(json => {
-            console.log(JSON.stringify(json));
-          });
+            const brightness = document.getElementById("led_brightness").value;
+            fetch(window.location.origin + "/setledbrightness?brightness=" + brightness, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST"
+            }).then(resp => {
+                return resp.json();
+            }).then(json => {
+                console.log(JSON.stringify(json));
+            });
         }
 
         function setDisplay() {
-          const displayID = document.getElementById("display_type").value;
-          fetch(window.location.origin + "/setdisplay?display=" + displayID, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            method: "POST"
-          }).then(resp => {
-            return resp.json();
-          }).then(json => {
-            console.log(JSON.stringify(json));
-          });
+            const displayID = document.getElementById("display_type").value;
+            fetch(window.location.origin + "/setdisplay?display=" + displayID, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST"
+            }).then(resp => {
+                return resp.json();
+            }).then(json => {
+                console.log(JSON.stringify(json));
+            });
+        }
+
+        function addColor() {
+            const color = document.getElementById("new_color_code").value;
+            if (!color.match(/^#[0-9a-fA-F]{6}$/g))
+                return;
+
+            fetch(window.location.origin + "/addcolor?color=" + color.substring(1), {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST"
+            }).then(resp => {
+                return resp.json();
+            }).then(json => {
+                console.log(JSON.stringify(json));
+                if (json.success) {
+                    document.getElementById("colors-list-div").innerHTML +=
+                    `<div class="color-item" style="background:rgb(${json.color[0]},${json.color[1]},${json.color[2]})"><span style="cursor: pointer;"onclick="removeColor(this)">x</span></div>`;
+                }
+            });
+        }
+
+        function removeColor(element) {
+            const colorElem = element.parentNode;
+            const index = Array.from(colorElem.parentNode.children).indexOf(colorElem)
+            fetch(window.location.origin + "/removecolor?index=" + index, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST"
+            }).then(resp => {
+                return resp.json();
+            }).then(json => {
+                console.log(JSON.stringify(json));
+                if (json.success) {
+                    document.getElementById("colors-list-div").removeChild(colorElem);
+                }
+            });
         }
     </script>
 </head>
 
 <body>
-<div>
+<div class="center container" style="width: 500px;">
     <h1>Hi!</h1>
-    <div>
-        <label for="led_brightness">Brightness:</label>
-        <input type="range" id="led_brightness" name="led_brightness" value="{{brightness}}" min="0" max="255">
+    <div class="input">
+        <div class="label">
+            <label for="led_brightness">Brightness:</label>
+        </div>
+        <input class="value" type="range" id="led_brightness" name="led_brightness" value="{{settings.brightness}}"
+               min="0"
+               max="255">
+        <button onclick="setBrightness()">Set</button>
     </div>
-    <div>
-        <button onclick="setBrightness()">Set Brightness</button>
-    </div>
-    <div>
-        <label for="display_type">Display: </label>
-        <select name="display_type" id="display_type">
+    <div class="input">
+        <div class="label">
+            <label for="display_type">Display:</label>
+        </div>
+        <select class="value" name="display_type" id="display_type">
             {% for display in settings.display_types %}
-                <option value="{{display.value}}">{{display.name}}</option>
+            <option value="{{display.value}}">{{display.name}}</option>
             {% endfor %}
         </select>
+        <button onclick="setDisplay()">Set</button>
     </div>
     <div>
-        <button onclick="setDisplay()">Set Display</button>
+        <h3>Colors</h3>
+        <div id="colors-list-div" class="colors-list">
+            {% for color in settings.colors %}
+            <div class="color-item" style="background:rgb{{color}}">
+                <span style="cursor: pointer;" onclick="removeColor(this)">x</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="input">
+            <input class="value" type="text" id="new_color_code" name="new_color_code" placeholder="Ex: #ff0000">
+            <button onclick="addColor()">Add Color</button>
+        </div>
     </div>
 </div>
 </body>
